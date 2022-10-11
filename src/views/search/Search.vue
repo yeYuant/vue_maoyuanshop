@@ -147,7 +147,7 @@ export default {
         // 当前所在的页数
         pageNo: 1,
         // 每页显示的数据条数
-        pageSize: 5,
+        pageSize: 3,
         // 平台售卖属性操作所带的参数
         props: [],
         // 品牌
@@ -257,7 +257,6 @@ export default {
       this.searchParams.pageNo = pageNo;
       // 获取动态页码，重新刷新页面获取新的数据
       this.getSearchData();
-      console.log(this.searchParams.pageNo);
     },
   },
   computed: {

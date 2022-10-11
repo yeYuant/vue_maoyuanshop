@@ -3,7 +3,11 @@
     <button @click="$emit('getPageNo', pageNo - 1)" :disabled="pageNo == 1">
       上一页
     </button>
-    <button v-if="startNumAndendNum.start > 1" @click="$emit('getPageNo', 1)">
+    <button
+      v-if="startNumAndendNum.start > 1"
+      @click="$emit('getPageNo', 1)"
+      :class="{ active: pageNo == 1 }"
+    >
       1
     </button>
     <button v-if="startNumAndendNum.start > 2">...</button>
@@ -12,6 +16,7 @@
       :key="page"
       v-show="page >= startNumAndendNum.start"
       @click="$emit('getPageNo', page)"
+      :class="{ active: pageNo == page }"
     >
       {{ page }}
     </button>
@@ -104,6 +109,9 @@ export default {
       background-color: #409eff;
       color: #fff;
     }
+  }
+  .active {
+    background-color: skyblue;
   }
 }
 </style>
