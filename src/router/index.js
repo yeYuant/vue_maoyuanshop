@@ -1,60 +1,10 @@
 // 配置路由(导入vue/vue-router)
 import vue from 'vue'
 import VueRouter from 'vue-router'
+import routes from './routes'
 
 // 使用路由插件
 vue.use(VueRouter)
-
-// 导入路由组件
-// 懒加载
-const Home = () => import('@/views/home/Home')
-const Search = () => import('@/views/search/Search')
-const Login = () => import('@/views/login/Login')
-const Regitser = () => import('@/views/register/Register')
-
-const router = new VueRouter({
-    // 配置路由
-    routes: [
-        // 配置重定向,访问 / 立即跳转到home 首页
-        {
-            path: '/',
-            redirect: '/home',
-
-        },
-        {
-            path: '/home',
-            component: Home,
-            // 路由元信息
-            meta: {
-                show: true
-            }
-        },
-        {
-            path: '/search/:keyword?',
-            component: Search,
-            name: 'search',
-            meta: {
-                show: true
-            }
-        },
-        {
-            path: '/login',
-            component: Login,
-            meta: {
-                show: false
-            }
-        },
-        {
-            path: '/register',
-            component: Regitser,
-            meta: {
-                show: false
-            }
-        },
-    ],
-    mode: "history"
-
-})
 
 // 先把VueRouter原型对象的push、replace保存一份
 let originPush = VueRouter.prototype.push
@@ -82,5 +32,15 @@ VueRouter.prototype.replace = function (localtion, resolve, reject) {
     }
 }
 
+export default new VueRouter({
+    // 配置路由
+    routes,
+    mode: "history",
 
-export default router
+    // scrollBehavior, 控制路由的滚动行为，可以设置路由跳转之后距离页面顶部的距离
+    scrollBehavior(to, from, savedPosition) {
+        // 始终滚动到顶部
+        return { y: 0 }
+    },
+
+})
