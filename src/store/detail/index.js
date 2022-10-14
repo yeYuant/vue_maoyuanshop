@@ -14,7 +14,6 @@ const mutations = {
 const actions = {
     async getDetailList({ commit }, skuId) {
         const res = await reqDetailList(skuId)
-        console.log(res);
         if (res.code == 200) {
             commit('DETAILLIST', res.data)
         }
@@ -27,12 +26,15 @@ const getters = {
     //面包屑的数据
     //state:计算属性getters里面的state，是当前仓库中state，并非大仓库中数据【home、search】
 
+    // 路径导航简化的数据
     categoryView(state) {
         return state.detailList.categoryView || {}
     },
+    // 商品信息简化的数据
     skuInfo(state) {
         return state.detailList.skuInfo || {}
     },
+    // 产品售卖属性简化的数据
     spuSaleAttrList(state) {
         return state.detailList.spuSaleAttrList
     }

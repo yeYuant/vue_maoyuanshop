@@ -16,9 +16,9 @@
         <!-- 左侧放大镜区域 -->
         <div class="previewWrap">
           <!--放大镜效果-->
-          <Zoom imageList />
+          <Zoom :skuImageList="skuImageList" />
           <!-- 小图列表 -->
-          <ImageList imageList />
+          <ImageList :skuImageList="skuImageList" />
         </div>
         <!-- 右侧选择区域布局 -->
         <div class="InfoWrap">
@@ -74,11 +74,15 @@
           <div class="choose">
             <div class="chooseArea">
               <div class="choosed"></div>
-              <dl v-for="saleAttr in spuSaleAttrList" :key="saleAttr.spuId">
+              <dl v-for="saleAttr in spuSaleAttrList" :key="saleAttr.id">
                 <dt class="title">{{ saleAttr.saleAttrName }}</dt>
                 <dd
                   v-for="saleAttrValue in saleAttr.spuSaleAttrValueList"
                   :key="saleAttrValue.id"
+                  :class="{ active: saleAttrValue.isChecked == 1 }"
+                  @click="
+                    changeActive(saleAttrValue, saleAttr.spuSaleAttrValueList)
+                  "
                 >
                   {{ saleAttrValue.saleAttrValueName }}
                 </dd>
@@ -342,9 +346,22 @@ export default {
   },
   computed: {
     ...mapGetters(["categoryView", "skuInfo", "spuSaleAttrList"]),
-    // 获取图片
-    imageList() {
+    // 给子组件Zoom的数据
+    skuImageList() {
       return this.skuInfo.skuImageList || [];
+    },
+  },
+  methods: {
+    // 点击按钮，将当前商品的售卖属性值设置为高亮  isChecked = 1
+    changeActive(saleAttrValue, saleAttr) {
+      // 排他思想，先将所有按钮的isChecked = 0 ，去除class
+      // forEach()：对数组进行遍历循环，这个方法没有返回值
+      // 重新循环一遍saleAttrValue，将所有isChecked = 0
+      saleAttr.forEach((item) => {
+        item.isChecked = 0;
+      });
+      // 为当前所点击的 按钮设置 isChecked = 1
+      saleAttrValue.isChecked = 1;
     },
   },
 };
@@ -571,7 +588,9 @@ export default {
       }
     }
   }
-
+  dd {
+    cursor: pointer;
+  }
   .product-detail {
     width: 1200px;
     margin: 30px auto 0;
