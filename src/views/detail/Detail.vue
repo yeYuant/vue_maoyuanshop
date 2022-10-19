@@ -90,12 +90,22 @@
             </div>
             <div class="cartWrap">
               <div class="controls">
-                <input autocomplete="off" class="itxt" />
-                <a href="javascript:" class="plus">+</a>
-                <a href="javascript:" class="mins">-</a>
+                <input
+                  autocomplete="off"
+                  class="itxt"
+                  v-model="skuNum"
+                  @change="changeSkuNum"
+                />
+                <a href="javascript:" class="plus" @click="skuNum++">+</a>
+                <a
+                  href="javascript:"
+                  class="mins"
+                  @click="skuNum > 1 ? skuNum-- : skuNum == 1"
+                  >-</a
+                >
               </div>
               <div class="add">
-                <a href="javascript:">加入购物车</a>
+                <a href="javascript:" @click="addShopCart">加入购物车</a>
               </div>
             </div>
           </div>
@@ -340,6 +350,11 @@ import Zoom from "./zoom/Zoom.vue";
 export default {
   name: "Detail",
   components: { ImageList, Zoom },
+  data() {
+    return {
+      skuNum: 1,
+    };
+  },
   mounted() {
     // 派发actions, 将商品的ID参数给传递过去
     this.$store.dispatch("getDetailList", this.$route.params.skuId);
@@ -362,6 +377,40 @@ export default {
       });
       // 为当前所点击的 按钮设置 isChecked = 1
       saleAttrValue.isChecked = 1;
+    },
+    // 表单元素修改产品的个数
+    changeSkuNum(event) {
+      let value = event.target.value * 1;
+      if (isNaN(value) || value < 1) {
+        value = 1;
+      }
+
+      this.skuNum = parseInt(value);
+    },
+    // 点击按钮，添加到购物车的回调函数
+    async addShopCart() {
+      // Promise 中 try catch用来判断异常，如果try 有错误则执行catch ，如果没有则不会执行catch
+      try {
+        // 本质上下面的代码，是调用了仓库中的 AddOrUpDateShopcart
+        // 我们需要知道这次请求是成功还是失败，如果成功进行路由的跳转，如果失败，则需要给用户提示
+        await this.$store.dispatch("AddOrUpDateShopcart", {
+          skuId: this.$route.params.skuId,
+          skuNum: this.skuNum,
+        });
+        // 进行路由的跳转
+        // 我们在确定好商品的数量和各种参数时，在跳转路由的时候需要将数据给传递过去，
+        // 但如果我们直接在路由跳转时携带参数，路径会比较难以阅读，所以我们选择使用存储
+        // localStorage 和 sessionStorage的区别： 前者是本地存储，后者是会话存储，前者会保留在电脑里面，后者在页面关闭时就会消失
+        // 我们选择使用 sessionStorage，因为路径的参数不需要一直存在，只需要当前页面关闭之后消失就行了
+        sessionStorage.setItem("SKUINFO", JSON.stringify(this.skuInfo));
+        this.$router.push({
+          name: "addcartsuccess",
+          query: { skuNum: this.skuNum },
+        });
+      } catch (error) {
+        // 失败提示信息
+        alert(error.message);
+      }
     },
   },
 };

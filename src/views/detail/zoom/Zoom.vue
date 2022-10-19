@@ -1,11 +1,11 @@
 <template>
   <div class="spec-preview">
     <img :src="skuImageObj.imgUrl" />
-    <div class="event"></div>
+    <div class="event" @mousemove="handler"></div>
     <div class="big">
-      <img src="../images/s1.png" />
+      <img :src="skuImageObj.imgUrl" ref="big" />
     </div>
-    <div class="mask"></div>
+    <div class="mask" ref="mask"></div>
   </div>
 </template>
 
@@ -34,6 +34,26 @@ export default {
   computed: {
     skuImageObj() {
       return this.skuImageList[this.currentIndex] || {};
+    },
+  },
+  methods: {
+    handler(event) {
+      let big = this.$refs.big;
+      let mask = this.$refs.mask;
+      let left = event.offsetX - mask.offsetWidth / 2;
+      let top = event.offsetY - mask.offsetHeight / 2;
+
+      // 限定遮罩层的边界值范围
+      if (left <= 0) left = 0;
+      if (left >= mask.offsetWidth) left = mask.offsetWidth;
+      if (top <= 0) top = 0;
+      if (top >= mask.offsetHeight) top = mask.offsetHeight;
+
+      mask.style.left = left + "px";
+      mask.style.top = top + "px";
+      // 给大图设置位移值 （注意：大图的比例应设为小图的两倍）
+      big.style.left = -2 * left + "px";
+      big.style.top = -2 * top + "px";
     },
   },
 };
@@ -71,11 +91,12 @@ export default {
   }
 
   .big {
-    width: 100%;
-    height: 100%;
+    width: 130%;
+    height: 130%;
     position: absolute;
     top: -1px;
     left: 100%;
+    margin-left: 7px;
     border: 1px solid #aaa;
     overflow: hidden;
     z-index: 998;
@@ -85,7 +106,7 @@ export default {
     img {
       width: 200%;
       max-width: 200%;
-      height: 200%;
+      height: 180%;
       position: absolute;
       left: 0;
       top: 0;

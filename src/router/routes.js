@@ -5,6 +5,8 @@ const Search = () => import('@/views/search/Search')
 const Login = () => import('@/views/login/Login')
 const Regitser = () => import('@/views/register/Register')
 const Detail = () => import('@/views/detail/Detail')
+const ShopCart = () => import('@/views/shopCart/ShopCart')
+const AddCartSuccess = () => import('@/views/addCartSuccess/AddCartSuccess')
 
 export default [
     // 配置重定向,访问 / 立即跳转到home 首页
@@ -50,4 +52,19 @@ export default [
             show: true
         }
     },
+    {
+        path: '/shopcart',
+        component: ShopCart,
+        meta: {
+            show: true
+        }
+    },
+    {
+        path: '/addcartcuccess',
+        component: AddCartSuccess,
+        name: 'addcartsuccess',
+        meta: {
+            show: true
+        }
+    }
 ]

@@ -24,3 +24,9 @@ export const reqSearchInfo = (params) => requests({
 
 //获取产品详情的接口   接口：api/item/{skuId}   请求方式：get
 export const reqDetailList = (skuId) => requests({ url: `/item/${skuId}`, method: 'get' });
+
+// 添加到购物车（或者对已有物品进行数量的改动）   接口：/api/cart/addToCart/{ skuId }/{ skuNum }  请求方式： post
+export const reqAddOrUpDateShopcart = (skuId, skuNum) => requests({ url: `cart/addToCart/${skuId}/${skuNum} `, method: 'post' })
+
+// 获取购物车列表  接口：/api/cart/cartList  请求方式：get
+export const reqShopCartList = () => requests({ url: '/cart/cartList', method: "get" })
