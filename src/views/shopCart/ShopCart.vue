@@ -54,7 +54,9 @@
             <span class="sum">{{ cart.skuPrice * cart.skuNum }}</span>
           </li>
           <li class="cart-list-con7">
-            <a href="#none" class="sindelet">删除</a>
+            <a href="#none" class="sindelet" @click="deleteCartById(cart)"
+              >删除</a
+            >
             <br />
             <a href="#none">移到收藏</a>
           </li>
@@ -86,6 +88,7 @@
 </template>
 
 <script>
+import throttle from "lodash/throttle.js";
 import { mapGetters } from "vuex";
 export default {
   name: "ShopCart",
@@ -103,7 +106,9 @@ export default {
       this.$store.dispatch("getShopCartList");
     },
     // 修改某一个产品的个数
-    async handler(type, disNum, cart) {
+    // throttle 是lodash 里配置好的 节流函数
+    // throttle节流函数，尽量别使用箭头函数，可能会出现上下文this指向问题  因此我们使用传统函数
+    handler: throttle(async function (type, disNum, cart) {
       // 判断点击的是哪一个按钮 （减少商品还是增加）
       switch (type) {
         case "add":
@@ -112,7 +117,7 @@ export default {
         case "minus":
           //判断产品的个数大于1，才可以传递给服务器-1
           //如果出现产品的个数小于等于1，传递给服务器个数0（商品数量原封不动）
-          disNum = cart.skuNum <= 1 ? 0 : -1;
+          disNum = cart.skuNum > 1 ? -1 : 0;
           break;
         case "change":
           // 如果输入的商品数量是非法值（汉子或者负数、小数） 则不将改变后的值给商品，依旧是原数据
@@ -130,6 +135,13 @@ export default {
           skuId: cart.skuId,
           skuNum: disNum,
         });
+        this.getCartDate();
+      } catch (error) {}
+    }, 700),
+    // 点击按钮，删除当前选中的商品
+    async deleteCartById(cart) {
+      try {
+        await this.$store.dispatch("deleteShopCartById", cart.skuId);
         this.getCartDate();
       } catch (error) {}
     },

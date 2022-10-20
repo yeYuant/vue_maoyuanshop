@@ -30,3 +30,6 @@ export const reqAddOrUpDateShopcart = (skuId, skuNum) => requests({ url: `cart/a
 
 // 获取购物车列表  接口：/api/cart/cartList  请求方式：get
 export const reqShopCartList = () => requests({ url: '/cart/cartList', method: "get" })
+
+// 删除当前选中商品的接口  接口：/api/cart/deleteCart/{skuId}  请求方式 ：delete  携带参数：skuId
+export const reqDeleteCartById = (skuId) => requests({ url: `/cart/deleteCart/${skuId}`, method: 'delete' })

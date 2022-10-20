@@ -104,7 +104,7 @@ export default {
     // }
 
     // throttle 是lodash 里配置好的 节流函数
-    // throttle节流函数，尽量别使用箭头函数，可能会出现上下文this指向问题  一次2我们使用传统函数
+    // throttle节流函数，尽量别使用箭头函数，可能会出现上下文this指向问题  因此我们使用传统函数
     changeBgColor: throttle(function (index) {
       this.currentIndex = index;
     }, 70),
