@@ -17,6 +17,7 @@
               type="checkbox"
               name="chk_list"
               :checked="cart.isChecked == 1"
+              @change="updateChecked(cart, $event)"
             />
           </li>
           <li class="cart-list-con2">
@@ -65,11 +66,16 @@
     </div>
     <div class="cart-tool">
       <div class="select-all">
-        <input class="chooseAll" type="checkbox" :checked="isAllChecked" />
+        <input
+          class="chooseAll"
+          type="checkbox"
+          :checked="isAllChecked && cartList.length > 0"
+          @change="changeAllChecked"
+        />
         <span> 全选</span>
       </div>
       <div class="option">
-        <a href="#none">删除选中的商品</a>
+        <a href="#none" @click="deleteCheckCart">删除选中的商品</a>
         <a href="#none">移到我的关注</a>
         <a href="#none">清除下柜商品</a>
       </div>
@@ -105,7 +111,7 @@ export default {
     getCartDate() {
       this.$store.dispatch("getShopCartList");
     },
-    // 修改某一个产品的个数
+    // 修改某一个产品的个数[节流]
     // throttle 是lodash 里配置好的 节流函数
     // throttle节流函数，尽量别使用箭头函数，可能会出现上下文this指向问题  因此我们使用传统函数
     handler: throttle(async function (type, disNum, cart) {
@@ -143,12 +149,45 @@ export default {
       try {
         await this.$store.dispatch("deleteShopCartById", cart.skuId);
         this.getCartDate();
-      } catch (error) {}
+      } catch (error) {
+        alert(error.message);
+      }
+    },
+    // 点击按钮，更新商品的选中状态
+    async updateChecked(cart, event) {
+      //如果修改数据成功，再次获取服务器数据（购物车）
+      let isChecked = parseInt(event.target.checked ? "1" : "0");
+      try {
+        await this.$store.dispatch("updateChecked", {
+          skuId: cart.skuId,
+          isChecked,
+        });
+        this.getCartDate();
+      } catch (error) {
+        alert(error.message);
+      }
+    },
+    // 点击按钮，删除选中的商品
+    deleteCheckCart() {
+      this.$store.dispatch("deleteAllCheckedCart");
+      // 再次刷新数据
+      this.getCartDate();
+    },
+    // 更改全选按钮状态
+    async changeAllChecked(event) {
+      try {
+        let isChecked = event.target.checked ? 1 : 0;
+        await this.$store.dispatch("updateAllChecked", isChecked);
+        // 再次发起请求
+        this.getCartDate();
+      } catch (error) {
+        alert(error.message);
+      }
     },
   },
   computed: {
     ...mapGetters(["shopCartList"]),
-
+    // 购物车数据
     cartList() {
       return this.shopCartList.cartInfoList || [];
     },

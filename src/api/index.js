@@ -11,16 +11,13 @@ export const reqCategoryList = () => requests({ url: '/product/getBaseCategoryLi
 
 // 获取banner（home轮播图接口）
 export const reqBannerList = () => mockReuqest({ url: '/banner', method: 'get' })
+
 // 获取floor（家用电器接口）
 export const reqFloorList = () => mockReuqest({ url: '/floor', method: 'get' })
 
 // 获取search 详情页信息  地址：/api/list  请求方式：post 参数：需要带参数
 // 这个函数需要接收外部传递参数
-export const reqSearchInfo = (params) => requests({
-    url: '/list',
-    method: 'post',
-    data: params
-})
+export const reqSearchInfo = (params) => requests({ url: '/list', method: 'post', data: params })
 
 //获取产品详情的接口   接口：api/item/{skuId}   请求方式：get
 export const reqDetailList = (skuId) => requests({ url: `/item/${skuId}`, method: 'get' });
@@ -33,3 +30,6 @@ export const reqShopCartList = () => requests({ url: '/cart/cartList', method: "
 
 // 删除当前选中商品的接口  接口：/api/cart/deleteCart/{skuId}  请求方式 ：delete  携带参数：skuId
 export const reqDeleteCartById = (skuId) => requests({ url: `/cart/deleteCart/${skuId}`, method: 'delete' })
+
+// 切换商品选中状态 接口：/api/cart/checkCart/{skuID}/{isChecked}  请求方式：get
+export const reqCartCheckById = (skuId, isChecked) => requests({ url: `/cart/checkCart/${skuId}/${isChecked}`, method: 'get' })
