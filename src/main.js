@@ -22,7 +22,8 @@ Vue.component(Pagination.name, Pagination)
 import '@/mock/mockServer'
 // 导入swiper css样式
 import 'swiper/css/swiper.min.css'
-
+// 导入表单验证插件
+import 'vee-validate'
 
 Vue.config.productionTip = false
 

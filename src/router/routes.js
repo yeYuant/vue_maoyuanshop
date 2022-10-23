@@ -7,6 +7,7 @@ const Regitser = () => import('@/views/register/Register')
 const Detail = () => import('@/views/detail/Detail')
 const ShopCart = () => import('@/views/shopCart/ShopCart')
 const AddCartSuccess = () => import('@/views/addCartSuccess/AddCartSuccess')
+const Tarde = () => import('@/views/trade/Tarde')
 
 export default [
     // 配置重定向,访问 / 立即跳转到home 首页
@@ -63,6 +64,13 @@ export default [
         path: '/addcartcuccess',
         component: AddCartSuccess,
         name: 'addcartsuccess',
+        meta: {
+            show: true
+        }
+    },
+    {
+        path: '/tarde',
+        component: Tarde,
         meta: {
             show: true
         }

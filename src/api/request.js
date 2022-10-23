@@ -17,12 +17,17 @@ const request = axios.create({
 
 // 配置请求拦截器,在发送请求之前，请求拦截器可以检测到，可以在请求发出去之前做一些事情
 request.interceptors.request.use((config) => {
-    nprogress.start() //进度条开始
     // config：配置对象，对象里面有一个属性很重要，headers请求头
     // 将当前用户的token配置到headers中，进行身份标识
     if (store.state.detail.uuid_token) {
         config.headers.userTempId = store.state.detail.uuid_token
     }
+    // 想服务器发送用户token 识别身份
+    if (store.state.user.token) {
+        config.headers.token = store.state.user.token
+    }
+    nprogress.start() //进度条开始
+
     return config
 })
 

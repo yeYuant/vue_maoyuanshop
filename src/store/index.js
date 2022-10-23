@@ -5,6 +5,7 @@ import home from './home'
 import search from './search'
 import detail from './detail'
 import shopcart from './shopcart'
+import user from './user'
 
 // 需要使用插件一次
 Vue.use(Vuex)
@@ -16,7 +17,8 @@ const store = new Vuex.Store({
         home,
         search,
         detail,
-        shopcart
+        shopcart,
+        user
     }
 
 })

@@ -2,6 +2,7 @@
 import vue from 'vue'
 import VueRouter from 'vue-router'
 import routes from './routes'
+import store from '@/store'
 
 // 使用路由插件
 vue.use(VueRouter)
@@ -32,7 +33,7 @@ VueRouter.prototype.replace = function (localtion, resolve, reject) {
     }
 }
 
-export default new VueRouter({
+const router = new VueRouter({
     // 配置路由
     routes,
     mode: "history",
@@ -44,3 +45,30 @@ export default new VueRouter({
     },
 
 })
+
+router.beforeEach((to, form, next) => {
+    let token = store.state.user.token
+    // 用户登录了
+    if (token) {
+        // 如果用户登录之后想要去登录页面或者注册页面，则阻止其行为
+        if (to.path == '/login' || to.path == "/register") {
+            next('/home')
+        } else {
+            // 不是则放行
+            next()
+        }
+    }
+    // 用户没有登录
+    else {
+        // 如果用户没有登录想要前往添加商品页面或者购物车页面，阻止其行为
+        if (to.path == '/addcartcuccess' || to.path == '/shopcart') {
+            alert('请先进行登录')
+            next('/login')
+        }
+        // 不是上面两个页面则放行
+        next()
+    }
+})
+export default router
+
+
