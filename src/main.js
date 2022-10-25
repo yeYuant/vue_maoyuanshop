@@ -10,13 +10,15 @@ import TypeNav from '@/components/type-nav/TypeNav.vue'
 import Carousel from '@/components/carousel/Carousel.vue'
 // 导入分页器全局组件
 import Pagination from '@/components/pagination/Pagination.vue'
+import * as API from "@/api";
 // 将三级联动组件注册为全局组件
 Vue.component(TypeNav.name, TypeNav)
 // 将轮播图组件注册为全局组件
 Vue.component(Carousel.name, Carousel)
 // 将分页器组件注册为全局组件
 Vue.component(Pagination.name, Pagination)
-
+// 按需引入 element-ui 组件 和 message弹框提示组件
+import { MessageBox } from "element-ui";
 
 // 导入mockServer.js
 import '@/mock/mockServer'
@@ -26,12 +28,15 @@ import 'swiper/css/swiper.min.css'
 import 'vee-validate'
 
 Vue.config.productionTip = false
+Vue.prototype.$msgbox = MessageBox;
+Vue.prototype.$alert = MessageBox.alert;
 
 new Vue({
   render: h => h(App),
   // 注册全局事件总线
   beforeCreate() {
     Vue.prototype.$bus = this
+    Vue.prototype.$API = API
   },
   // 注册路由
   router,

@@ -7,12 +7,18 @@ const Regitser = () => import('@/views/register/Register')
 const Detail = () => import('@/views/detail/Detail')
 const ShopCart = () => import('@/views/shopCart/ShopCart')
 const AddCartSuccess = () => import('@/views/addCartSuccess/AddCartSuccess')
-const Tarde = () => import('@/views/trade/Tarde')
+const Trade = () => import('@/views/trade/Trade')
+const Pay = () => import('@/views/pay/Pay')
+const PaySuccess = () => import('@/views/paySuccess/PaySuccess')
+const Center = () => import('@/views/center/Center')
+const MyOrder = () => import('@/views/center/myOrder/MyOrder')
+const GroupOrder = () => import('@/views/center/groupOrder/GroupOrder')
 
 export default [
-    // 配置重定向,访问 / 立即跳转到home 首页
+    // 配置一级路由
     {
         path: '/',
+        // 配置重定向,访问 / 立即跳转到home 首页
         redirect: '/home',
 
     },
@@ -69,10 +75,44 @@ export default [
         }
     },
     {
-        path: '/tarde',
-        component: Tarde,
+        path: '/trade',
+        component: Trade,
         meta: {
             show: true
         }
-    }
+    },
+    {
+        path: '/pay',
+        component: Pay,
+        meta: {
+            show: true
+        }
+    },
+    {
+        path: '/paysuccess',
+        component: PaySuccess,
+        meta: {
+            show: true
+        },
+    },
+    ,
+    {
+        path: '/center',
+        redirect: '/center/myorder',
+        component: Center,
+        meta: {
+            show: true
+        },
+        children: [
+            {
+                path: 'myorder',
+                component: MyOrder
+            },
+            {
+                path: 'grouporder',
+                component: GroupOrder
+            },
+        ]
+    },
+
 ]

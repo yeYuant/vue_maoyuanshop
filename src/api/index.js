@@ -48,3 +48,21 @@ export const reqGetUserInfo = () => requests({ url: '/user/passport/auth/getUser
 
 // 用户退出登录 接口：/user/passport/logout  请求方式：get  无参数
 export const reqUserLogout = () => requests({ url: "/user/passport/logout", method: 'get' })
+
+// 获取用户地址 接口：user/userAddress/auth/findUserAddressList  请求方式：get  无参数
+export const reqGetUserAddress = () => requests({ url: '/user/userAddress/auth/findUserAddressList', method: 'get' })
+
+// 获取商品交易页面 商品清单 接口：/api/order/auth/trade  请求方式get  无参数
+export const reqGetTradeGoodsList = () => requests({ url: '/order/auth/trade', method: "get" })
+
+// 获取我的订单信息 接口:/api/order/auth/{page}/{limit} 请求方式：get  参数 page：页码 limit：每页显示数量
+export const reqGetMyorder = (page, limit) => requests({ url: `/order/auth/${page}/${limit}`, method: 'get' })
+
+// 提交订单 接口：/api/order/auth/submitOrder?tradeNo={tradeNo} 请求方式：post 参数 ：consignee consigneeTel deliveryAddress paymentWay orderComment orderDetailList
+export const reqSubmitUserOrder = (tradeNo, data) => requests({ url: `/order/auth/submitOrder?tradeNo=${tradeNo}`, data, method: 'post' })
+
+// 获取订单支付页信息 接口：/api/payment/weixin/createNative/{orderId} 请求方式：get 参数：orderId
+export const reqGetOrderPayInfo = (orderId) => requests({ url: `/payment/weixin/createNative/${orderId} `, method: 'get' })
+
+// 获取订单支付状态 接口：/api/payment/weixin/queryPayStatus/{orderId}  请求方式 get 参数 orderId
+export const reqOrderStatus = (orderId) => requests({ url: `/payment/weixin/queryPayStatus/${orderId}`, method: 'get' })

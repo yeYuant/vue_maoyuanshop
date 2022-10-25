@@ -3,28 +3,14 @@
     <h3 class="title">填写并核对订单信息</h3>
     <div class="content">
       <h5 class="receive">收件人信息</h5>
-      <div class="address clearFix">
-        <span class="username selected">张三</span>
-        <p>
-          <span class="s1">北京市昌平区宏福科技园综合楼6层</span>
-          <span class="s2">15010658793</span>
-          <span class="s3">默认地址</span>
-        </p>
-      </div>
-      <div class="address clearFix">
-        <span class="username selected">李四</span>
-        <p>
-          <span class="s1">北京市昌平区宏福科技园综合楼6层</span>
-          <span class="s2">13590909098</span>
-          <span class="s3">默认地址</span>
-        </p>
-      </div>
-      <div class="address clearFix">
-        <span class="username selected">王五</span>
-        <p>
-          <span class="s1">北京市昌平区宏福科技园综合楼6层</span>
-          <span class="s2">18012340987</span>
-          <span class="s3">默认地址</span>
+      <div class="address clearFix" v-for="user in userAddress" :key="user.id">
+        <span class="username" :class="{ selected: user.isDefault == 1 }">{{
+          user.consignee
+        }}</span>
+        <p @click="changeDefault(user, userAddress)">
+          <span class="s1">{{ user.fullAddress }}</span>
+          <span class="s2">{{ user.phoneNum }}</span>
+          <span class="s3" v-if="user.isDefault == 1">默认地址</span>
         </p>
       </div>
       <div class="line"></div>
@@ -39,51 +25,42 @@
         <h5>配送方式</h5>
         <div class="info clearFix">
           <span class="s1">天天快递</span>
-          <p>配送时间：预计8月10日（周三）09:00-15:00送达</p>
+          <p>配送时间:预计8月10日 (周三) 09:00-15:00送达</p>
         </div>
       </div>
       <div class="detail">
         <h5>商品清单</h5>
-        <ul class="list clearFix">
+        <ul
+          class="list clearFix"
+          v-for="goods in tradeGoodsList.detailArrayList"
+          :key="goods.skuId"
+        >
           <li>
-            <img src="./images/goods.png" alt="" />
+            <img
+              :src="goods.imgUrl"
+              alt=""
+              style="width: 100px; height: 100px"
+            />
           </li>
-          <li>
+          <li style="text-align: left" class="text">
             <p>
-              Apple iPhone 6s (A1700) 64G 玫瑰金色
-              移动联通电信4G手机硅胶透明防摔软壳 本色系列
+              {{ goods.skuName }}
             </p>
             <h4>7天无理由退货</h4>
           </li>
           <li>
-            <h3>￥5399.00</h3>
+            <h3>{{ goods.orderPrice }}</h3>
           </li>
-          <li>X1</li>
-          <li>有货</li>
-        </ul>
-        <ul class="list clearFix">
-          <li>
-            <img src="./images/goods.png" alt="" />
-          </li>
-          <li>
-            <p>
-              Apple iPhone 6s (A1700) 64G 玫瑰金色
-              移动联通电信4G手机硅胶透明防摔软壳 本色系列
-            </p>
-            <h4>7天无理由退货</h4>
-          </li>
-          <li>
-            <h3>￥5399.00</h3>
-          </li>
-          <li>X1</li>
+          <li>X{{ goods.skuNum }}</li>
           <li>有货</li>
         </ul>
       </div>
       <div class="bbs">
-        <h5>买家留言：</h5>
+        <h5>买家留言:</h5>
         <textarea
-          placeholder="建议留言前先与商家沟通确认"
+          placeholder=" 建议留言前先与商家沟通确认"
           class="remarks-cont"
+          v-model="msg"
         ></textarea>
       </div>
       <div class="line"></div>
@@ -96,37 +73,95 @@
     <div class="money clearFix">
       <ul>
         <li>
-          <b><i>1</i>件商品，总商品金额</b>
-          <span>¥5399.00</span>
+          <b
+            ><i style="font-weight: 900">{{ tradeGoodsList.totalNum }}</i>
+            件商品，总商品金额</b
+          >
+          <span>¥ {{ tradeGoodsList.totalAmount }}.00</span>
         </li>
-        <li>
-          <b>返现：</b>
-          <span>0.00</span>
-        </li>
-        <li>
-          <b>运费：</b>
-          <span>0.00</span>
-        </li>
+        <li>返现:<span>0.00</span></li>
+        <li>运费:<span>0.00</span></li>
       </ul>
     </div>
     <div class="trade">
-      <div class="price">应付金额:　<span>¥5399.00</span></div>
+      <div class="price">
+        应付金额: <span>¥ {{ tradeGoodsList.totalAmount }}.00</span>
+      </div>
       <div class="receiveInfo">
         寄送至:
-        <span>北京市昌平区宏福科技园综合楼6层</span>
-        收货人：<span>张三</span>
-        <span>15010658793</span>
+        <span>{{ userDefaultAddress.fullAddress }} </span>
+        收货人：<span>{{ userDefaultAddress.consignee }} </span>
+        <span> 联系电话:{{ userDefaultAddress.phoneNum }}</span>
       </div>
     </div>
     <div class="sub clearFix">
-      <router-link class="subBtn" to="/pay">提交订单</router-link>
+      <!-- <router-link class="subBtn" to="/pay">提交订单</router-link> -->
+      <a class="subBtn" @click="submitOrder">提交订单</a>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   name: "Trade",
+  data() {
+    return {
+      // 买家备注信息
+      msg: "",
+    };
+  },
+  mounted() {
+    this.$store.dispatch("getTradeGoodsList");
+    this.$store.dispatch("getUserAddress");
+  },
+  computed: {
+    ...mapState({
+      userAddress: (state) => state.trade.userAddress,
+      tradeGoodsList: (state) => state.trade.tradeGoodsList,
+    }),
+    // 最终收货人
+    userDefaultAddress() {
+      return (
+        // find 查找数组当中，符合条件的元素返回，【find生成的不是一个数组，而是一个对象】
+        this.userAddress.find((item) => {
+          return item.isDefault == 1;
+        }) || {}
+      );
+    },
+  },
+  methods: {
+    // 点击按钮，提交订单
+    async submitOrder() {
+      //交易编码
+      const { tradeNo } = this.tradeGoodsList;
+      // 剩余需要提交的六个参数 consignee consigneeTel deliveryAddress paymentWay orderComment orderDetailList
+      let data = {
+        consignee: this.userAddress.consignee, // 收件人姓名
+        consigneeTel: this.userAddress.phoneNum, // 收件人电话
+        deliveryAddress: this.userAddress.fullAddress, // 收件人地址
+        paymentWay: "ONLINE", // 在线支付
+        orderComment: this.msg, // 买家备注信息
+        orderDetailList: this.tradeGoodsList.detailArrayList, // 商品清单
+      };
+      try {
+        await this.$store.dispatch("postUserOrder", { tradeNo, data });
+        this.$router.push(`/pay?orderId=${this.$store.state.trade.orderId}`);
+      } catch (error) {
+        alert(error.message);
+      }
+    },
+
+    // 点击按钮，设为默认地址
+    changeDefault(user, userAddress) {
+      // 派他思想，先循环遍历全部，将其的isDefault全部设置为 0
+      userAddress.forEach((item) => {
+        item.isDefault = 0;
+      });
+      // 将当前点击的 isDefault设置为1 即为当前点击的为默认选中
+      user.isDefault = 1;
+    },
+  },
 };
 </script>
 
@@ -261,6 +296,9 @@ export default {
       background: #feedef;
       padding: 15px;
       margin: 2px auto 0;
+      .text {
+        width: 540px;
+      }
 
       h5 {
         line-height: 50px;

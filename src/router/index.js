@@ -46,26 +46,42 @@ const router = new VueRouter({
 
 })
 
-router.beforeEach((to, form, next) => {
+router.beforeEach(async (to, form, next) => {
     let token = store.state.user.token
+    let name = store.state.user.userInfo.name
     // 用户登录了
     if (token) {
         // 如果用户登录之后想要去登录页面或者注册页面，则阻止其行为
-        if (to.path == '/login' || to.path == "/register") {
+        if (to.path == '/login') {
             next('/home')
         } else {
-            // 不是则放行
-            next()
+            // 如果用户登录之后token没有过期
+            if (name) {
+                // 放行
+                next()
+            } else {
+                try {
+                    //如果用户登录且token没有过期，当前页面没有获取到用户信息的话，则重新派发action。获取用户信息
+                    await store.dispatch('getUserInfo')
+                    // 放行
+                    next()
+                } catch (error) {
+                    // 用户token身份信息过期，清除本地token
+                    store.dispatch('userLogout')
+                    next('/login')
+                }
+            }
+
         }
     }
     // 用户没有登录
     else {
-        // 如果用户没有登录想要前往添加商品页面或者购物车页面，阻止其行为
+        // // 如果用户没有登录想要前往添加商品页面或者购物车页面，阻止其行为
         if (to.path == '/addcartcuccess' || to.path == '/shopcart') {
             alert('请先进行登录')
             next('/login')
         }
-        // 不是上面两个页面则放行
+        // // 不是上面两个页面则放行
         next()
     }
 })

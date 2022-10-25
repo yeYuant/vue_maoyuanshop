@@ -5,7 +5,7 @@ const state = {
     // 验证码
     code: '',
     // 用户身份信息
-    token: localStorage.getItem('TOKEN'),
+    token: sessionStorage.getItem('TOKEN'),
     // 登录后的用户信息
     userInfo: {},
 }
@@ -25,7 +25,7 @@ const mutations = {
         state.token = '';
         state.userInfo = {};
         //本地存储数据清空
-        localStorage.removeItem('TOKEN')
+        sessionStorage.removeItem('TOKEN')
     }
 }
 const actions = {
@@ -56,7 +56,7 @@ const actions = {
         if (res.code == 200) {
             commit('USERLOGIN', res.data.token)
             // 持久化本地存储
-            localStorage.setItem('TOKEN', res.data.token)
+            sessionStorage.setItem('TOKEN', res.data.token)
         }
         else {
             return Promise.reject(new Error('filed 账号或密码错误'))
