@@ -10,10 +10,16 @@ import TypeNav from '@/components/type-nav/TypeNav.vue'
 import Carousel from '@/components/carousel/Carousel.vue'
 // 导入分页器全局组件
 import Pagination from '@/components/pagination/Pagination.vue'
+// 导入图片懒加载插件
+import VueLazyload from 'vue-lazyload'
+// 导入图片
+import awaiting from '@/assets/awaiting.gif'
+//引入表单校验插件
+import "@/plugins/validate";
 import * as API from "@/api";
 // 将三级联动组件注册为全局组件
 Vue.component(TypeNav.name, TypeNav)
-// 将轮播图组件注册为全局组件
+// 将轮播图组件注册为全局组
 Vue.component(Carousel.name, Carousel)
 // 将分页器组件注册为全局组件
 Vue.component(Pagination.name, Pagination)
@@ -30,6 +36,10 @@ import 'vee-validate'
 Vue.config.productionTip = false
 Vue.prototype.$msgbox = MessageBox;
 Vue.prototype.$alert = MessageBox.alert;
+// 注册图片懒加载插件
+Vue.use(VueLazyload, {
+  loading: awaiting
+})
 
 new Vue({
   render: h => h(App),

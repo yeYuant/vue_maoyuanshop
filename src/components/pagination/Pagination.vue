@@ -22,13 +22,20 @@
     </button>
 
     <button v-if="startNumAndendNum.end < totalPage - 1">···</button>
-    <button v-if="startNumAndendNum.end < totalPage">{{ totalPage }}</button>
     <button
+      style="margin-right: 15px"
       @click="$emit('getPageNo', pageNo + 1)"
       :disabled="pageNo == totalPage"
     >
       下一页
     </button>
+    <span class="totalPage">
+      共
+      <i style="font-weight: 700" v-if="startNumAndendNum.end < totalPage">{{
+        totalPage
+      }}</i>
+      页
+    </span>
     <button style="margin-left: 30px">共{{ total }}条数据</button>
   </div>
 </template>
@@ -112,6 +119,11 @@ export default {
   }
   .active {
     background-color: skyblue;
+  }
+  .totalPage {
+    font-size: 14px;
+    line-height: 26px;
+    margin-right: -19px;
   }
 }
 </style>

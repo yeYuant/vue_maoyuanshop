@@ -76,13 +76,17 @@ router.beforeEach(async (to, form, next) => {
     }
     // 用户没有登录
     else {
-        // // 如果用户没有登录想要前往添加商品页面或者购物车页面，阻止其行为
-        if (to.path == '/addcartcuccess' || to.path == '/shopcart') {
+        // // 如果用户没有登录想要前往 /shopcart,/pay,/paysuccess,/trade，阻止其行为
+        let toPath = to.path
+        let toPathData = toPath.includes('/shopcart') || toPath.includes('/trade') || toPath.includes('/pay') || toPath.includes('/paysuccess') || toPath.includes('/center') || toPath.includes('/addcartcuccess')
+        if (toPathData) {
             alert('请先进行登录')
-            next('/login')
+            // 进行路由参数的截取 ：如果用户在没有登录时点击了某个需要登录才能去的组件按钮，则记录下此按钮的path
+            next('/login?redirect=' + toPath)
+        } else {
+            next()
         }
-        // // 不是上面两个页面则放行
-        next()
+
     }
 })
 export default router
